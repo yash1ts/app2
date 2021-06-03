@@ -1,10 +1,10 @@
-import { Canvas,useLoader} from '@react-three/fiber';
-import React, { Suspense, useRef, useState } from 'react';
+import { Canvas,useFrame,useLoader} from '@react-three/fiber';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import './App.css';
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader';
 import { MeshNormalMaterial, PerspectiveCamera} from 'three';
-import { Button } from '@material-ui/core';
-import { OrbitControls } from '@react-three/drei';
+import { Button, CircularProgress } from '@material-ui/core';
+import { OrbitControls, Sphere } from '@react-three/drei';
 
 function Box(props) {
   const mesh = useRef(null)
@@ -23,10 +23,40 @@ function Box(props) {
   )
 }
 
+function Loader(){
+  const ref = useRef();
+  const [hovered, setHovered] = useState(false);
+  useFrame(() => {
+    ref.current.rotation.y += 0.01
+    ref.current.rotation.x += 0.01})
+
+  return (
+    <mesh
+      ref={ref}
+      scale={hovered ? [1.2, 1.2, 1.2] : [1, 1, 1]}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}>
+        <ambientLight intensity={0.3} />
+      <pointLight position={[-20, -20, -20]} intensity={0.7} />
+      <pointLight position={[20, 20, 20]} intensity={0.7}/>
+      <pointLight position={[20, -20, 20]} intensity={0.7}/>
+      <pointLight position={[-20, 20, 20]} intensity={0.7}/>
+      <pointLight position={[20, 20, -20]} intensity={0.7}/>
+      <pointLight position={[-20, -20, 20]} intensity={0.7}/>
+      <pointLight position={[-20, 20, -20]} intensity={0.7}/>
+      <pointLight position={[20, -20, -20]} intensity={0.7}/>
+      <boxBufferGeometry attach="geometry" args={[10, 10, 10]} />
+      <meshPhongMaterial color="black"/>
+    </mesh>
+  )
+}
+
 function App() {
   const [showUpper, setShowUpper] = useState(true);
   const [showLower, setShowLower] = useState(true);
   const [meshAngle, setMeshAngle] = useState(1.75);
+  const [loading, setLoading] = useState(true);
+  const [fileUrl, setFileUrl] = useState("");
   const camera = new PerspectiveCamera(undefined, 
   window.innerWidth/window.innerHeight);
   const controls = useRef(null);
@@ -38,7 +68,6 @@ function App() {
     setShowLower(true);
     setMeshAngle(1.75);
     camera.position.set(0,0,140);
-    camera.lookAt( controls.current.target );
     controls.current.update();
   }
 
@@ -49,7 +78,6 @@ function App() {
     setMeshAngle(1.75);
 
     camera.position.set( 120, 0, 120 );
-    camera.lookAt( controls.current.target );
 
     controls.current.update();
     
@@ -58,14 +86,32 @@ function App() {
   const leftView = () => {
     setShowUpper(true);
     setShowLower(true);
+    setMeshAngle(1.75);
     camera.position.set(-120,0,120);
-    camera.lookAt( controls.current.target );
     // controls.target.set(0,0,0);
     controls.current.update();
   }
 
+  useEffect(()=>{
+    const url = "https://yash1ts.pythonanywhere.com/js/frog.stl";
+    fetch(url,{
+      method: 'GET',
+  }).then((response)=>{ 
+    const blob = response.blob();
+    var file = new File([blob], "file.stl",{lastModified: new Date().getTime(), type: blob.type});
+    return file;
+  })
+  .then((file) => {
+    const uri = URL.createObjectURL(file);
+    console.log('file');
+    console.log(uri);
+    setFileUrl(uri);
+    setLoading(false);
+  })
+  },[]);
+
   return (
-    <div className="App" style={{flex: 1, height: '100vh'}} >
+    <div className="App" style={{flex: 1, height: '100vh', justifyContent: 'center', alignItems:'center'}} >
       <Button variant="contained" color="primary" onClick={()=> {
         centerView();
         }}>Center</Button>
@@ -76,26 +122,22 @@ function App() {
         leftView();
         }}>Left</Button>
         <Button variant="contained" color="primary" onClick={()=> {
-          centerView();
+        centerView();
         setShowLower(false);
         setShowUpper(true);
-        setMeshAngle(0);
+        setMeshAngle(3.14);
         }}>Upper Jaw</Button>
         <Button variant="contained" color="primary" onClick={()=> {
-          centerView();
+        centerView();
         setShowLower(true);
         setShowUpper(false);
-        controls.current.reset();
-        setMeshAngle(3.14);
+        setMeshAngle(0);
         }}>Lower Jaw</Button>
-      <Canvas camera={camera} onCreated={()=>{
-        controls?.current?.saveState();
-      }}>
-        <Suspense fallback={null}>
+      <Canvas camera={camera}>
         <ambientLight intensity={1}/>
-        <pointLight args={[10,10,10]}/>
-        {showLower && <Box position={[0, 0, 1]} rotation={[meshAngle,3.14,0]} url={'/modl.stl'}/>}
-        {showUpper && <Box position={[0, 0, -1]} rotation={[meshAngle,3.14,0]} url={'/mod.stl'}/>}
+        <Suspense fallback={<Loader/>}>
+        {showLower && <Box position={[0, 0, 1]} rotation={[meshAngle,3.14,0]} url={'https://yash1ts.pythonanywhere.com/js/mod.stl'}/>}
+        {showUpper && <Box position={[0, 0, -1]} rotation={[meshAngle,3.14,0]} url={'https://yash1ts.pythonanywhere.com/js/modl.stl'}/>}
         </Suspense>
         <OrbitControls ref={controls}/>
       </Canvas>
