@@ -3,10 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { PerspectiveCamera } from 'three';
+
+const camera = new PerspectiveCamera(undefined, 
+  window.innerWidth/window.innerHeight);
+const controls = new OrbitControls(camera, document.getElementById('root'));
+camera.position.set(0,0,140);
+controls.enabled = false;
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App camera={camera} controls={controls}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
