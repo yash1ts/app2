@@ -1,14 +1,20 @@
+import { useContextBridge } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import React, {Suspense} from 'react';
+import { ControlContext } from './ControlContext';
 import Loader from './Loader';
-export default function CanvasBoard({model, camera, control}) {
-
+import { LoadingContext } from './LoadingContext';
+export default function CanvasBoard({camera, children}) {
+    const ContextBridge = useContextBridge(ControlContext, LoadingContext)
     return (
         <Canvas camera={camera}>
+            <ContextBridge>
+
         <ambientLight intensity={1}/>
         <Suspense fallback={<Loader/>} >
-            {model}
+            {children}
         </Suspense>
+        </ContextBridge>
       </Canvas>
     );
 }

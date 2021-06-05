@@ -1,10 +1,14 @@
 import { Button } from '@material-ui/core';
-import React from 'react';
+import React, { useContext } from 'react';
+import { ControlContext } from './ControlContext';
 export function ControlBoard({controls, camera, setShowLower, setShowUpper, setMeshAngle}) {
+  const [controlState, setControlState] = useContext(ControlContext);
     const centerView = () => {
-        setShowUpper(true);
-        setShowLower(true);
-        setMeshAngle(1.75);
+        setControlState({
+          showUpper: true,
+          showLower: true,
+          meshAngle: 1.75
+        });
         camera.position.set(0,0,140);
         camera.updateProjectionMatrix();
         camera.updateWorldMatrix();
@@ -12,9 +16,11 @@ export function ControlBoard({controls, camera, setShowLower, setShowUpper, setM
       }
     
       const rightView = () => {
-        setShowUpper(true);
-        setShowLower(true);
-        setMeshAngle(1.75);
+        setControlState({
+          showUpper: true,
+          showLower: true,
+          meshAngle: 1.75
+        });
     
         camera.position.set( 120, 0, 120 );
         camera.updateProjectionMatrix();
@@ -24,9 +30,11 @@ export function ControlBoard({controls, camera, setShowLower, setShowUpper, setM
       }
     
       const leftView = () => {
-        setShowUpper(true);
-        setShowLower(true);
-        setMeshAngle(1.75);
+        setControlState({
+          showUpper: true,
+          showLower: true,
+          meshAngle: 1.75
+        });
         camera.position.set(-120,0,120);
         camera.updateProjectionMatrix();
         camera.updateWorldMatrix();
@@ -34,9 +42,11 @@ export function ControlBoard({controls, camera, setShowLower, setShowUpper, setM
       }
     
       const upperView = () => {
-        setShowLower(false);
-        setShowUpper(true);
-        setMeshAngle(0);
+        setControlState({
+          showUpper: true,
+          showLower: false,
+          meshAngle: 0
+        });
         camera.position.set(0,0,140);
         camera.updateProjectionMatrix();
         camera.updateWorldMatrix();
@@ -44,16 +54,18 @@ export function ControlBoard({controls, camera, setShowLower, setShowUpper, setM
       }
     
       const lowerView = () => {
-        setShowLower(true);
-        setShowUpper(false);
-        setMeshAngle(3.14);
+        setControlState({
+          showUpper: false,
+          showLower: true,
+          meshAngle: 3.14
+        });
         camera.position.set(0,0,140);
         camera.updateProjectionMatrix();
         camera.updateWorldMatrix();
         controls.update();
       }
     return (
-        <>
+        <div style={{display:'flex',  flexDirection: 'row', justifyContent: 'space-around', margin: 50}}>
             <Button variant="contained" color="primary" onClick={()=> {
             centerView();
             }}>Center</Button>
@@ -69,6 +81,6 @@ export function ControlBoard({controls, camera, setShowLower, setShowUpper, setM
             <Button variant="contained" color="primary" onClick={()=> {
             lowerView();
             }}>Lower Jaw</Button>
-        </>
+        </div>
     );
 }
