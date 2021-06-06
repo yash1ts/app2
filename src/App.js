@@ -52,15 +52,16 @@ function App({camera, controls}) {
     return 'https://yash1ts.pythonanywhere.com/js/'+it+'.stl';
   });
   controls.enabled = controlsEnabled;
+  
 
   return (
     <ControlContextProvider >
       <LoadingContextProvider>
-    <div className="App" style={{ display:'flex', flex: 1, height: '100vh'}} >
-      <div style={{flex: 1, height: '100vh', width:'100%', zIndex: 1, position:'absolute'}}>
+    <div className="App" style={{display:'flex', height:'100vh'}} >
+      <div style={{display:'flex', flex: 1, width:'100%', zIndex: 1, position:'fixed', left:0, right:0, bottom:0, top:0}}>
       {controls.enabled && <ControlBoard camera={camera} controls={controls} />}
       </div>
-      <CanvasBoard camera={camera}>
+      <CanvasBoard camera={camera} >
         <JawModel upperData={upperData} lowerData={lowerData} enableControls={enableControls}/>
       </CanvasBoard>
     </div>
