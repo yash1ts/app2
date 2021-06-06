@@ -10,11 +10,22 @@ import { LoadingContext, LoadingContextProvider } from './LoadingContext';
 
 function JawModel({upperData, lowerData, enableControls}) {
   const [controlState, setControlState] = useContext(ControlContext);
+  const [loadingState, setLoadingState] = useContext(LoadingContext);
   let count = 0;
+ 
   const data = useLoader(STLLoader, [...upperData, ...lowerData], null, (xhr)=> {
     const url = xhr.target.responseURL;
+    setLoadingState((loading)=>({
+      ...loading,
+      [url]: {
+        loaded: xhr.loaded,
+        total: xhr.total,
+      }
+    }))
     if(xhr.loaded === xhr.total){
       count+=1;
+      
+
       if(count === upperData.length + lowerData.length){
         enableControls(true);
       }

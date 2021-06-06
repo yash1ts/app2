@@ -5,9 +5,15 @@ import { LoadingContext } from './LoadingContext';
 export default function Loader(){
     const ref = useRef();
     const [hovered, setHovered] = useState(false);
-    const [upperState, setUpperState, lowerState, setLowerState] = useContext(LoadingContext);
-    // const progress = (upperState.loaded + lowerState.loaded)*100 / (upperState.total+ lowerState.total);
-    const {progress} = useProgress();
+    const [loadingState, setLoadingState] = useContext(LoadingContext);
+    let loaded=0;
+    let total=0;
+    Object.values(loadingState).forEach((it)=>{
+      total+=it.total;
+    loaded+=it.loaded});
+
+    const progress = loaded*100/total;
+    // const {progress} = useProgress();
     useFrame(() => {
       ref.current.rotation.y += 0.02
       ref.current.rotation.x += 0.02});
@@ -31,7 +37,7 @@ export default function Loader(){
         <boxGeometry attach="geometry" args={[10, 10, 10]} />
         <meshPhongMaterial color="black"/>
       </mesh>
-      <Html position={[-1, -15, 0]}><h4>{`${progress.toFixed(0) || 0}`}</h4></Html>
+      <Html position={[-1, -15, 0]}><h4>{`${progress ? progress.toFixed(0): 0}`}</h4></Html>
       </group>
     )
   }
