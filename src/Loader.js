@@ -1,4 +1,4 @@
-import { Html } from '@react-three/drei';
+import { Html, useProgress } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import React, {useContext, useRef, useState} from 'react';
 import { LoadingContext } from './LoadingContext';
@@ -6,7 +6,8 @@ export default function Loader(){
     const ref = useRef();
     const [hovered, setHovered] = useState(false);
     const [upperState, setUpperState, lowerState, setLowerState] = useContext(LoadingContext);
-    const progress = (upperState.loaded + lowerState.loaded)*100 / (upperState.total+ lowerState.total);
+    // const progress = (upperState.loaded + lowerState.loaded)*100 / (upperState.total+ lowerState.total);
+    const {progress} = useProgress();
     useFrame(() => {
       ref.current.rotation.y += 0.02
       ref.current.rotation.x += 0.02});

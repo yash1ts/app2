@@ -9,7 +9,9 @@ export const ControlContextProvider = props => {
   const [controlState, setControlState] = useState({
       showUpper: true,
       showLower: true,
-      meshAngle: 1.75
+      meshAngle: 1.75,
+      stage: 0,
+      total: 5,
   });
  
   return (

@@ -8,57 +8,49 @@ import { Model } from './Model';
 import { ControlContext, ControlContextProvider } from './ControlContext';
 import { LoadingContext, LoadingContextProvider } from './LoadingContext';
 
-function JawModel({meshAngle, showUpper, showLower, enableControls}) {
-  const upperjaw = 'https://yash1ts.pythonanywhere.com/js/mod.stl';
-  const lowerjaw = 'https://yash1ts.pythonanywhere.com/js/modl.stl';
+function JawModel({upperData, lowerData, enableControls}) {
   const [controlState, setControlState] = useContext(ControlContext);
-  const [upperState, setUpperState,lowerState, setLowerState] = useContext(LoadingContext);
-  let firstLoaded = false;
-  const [upper, lower] = useLoader(STLLoader, [upperjaw, lowerjaw], null, (xhr)=> {
+  let count = 0;
+  const data = useLoader(STLLoader, [...upperData, ...lowerData], null, (xhr)=> {
     const url = xhr.target.responseURL;
-    if(url === upperjaw) {
-      setUpperState({
-          total: xhr.total,
-          loaded: xhr.loaded
-      })
-    } else {
-      setLowerState({
-          total: xhr.total,
-          loaded: xhr.loaded
-      })
-    }
-    
     if(xhr.loaded === xhr.total){
-      if(firstLoaded) {
-        enableControls();
-      } else {
-        firstLoaded = true;
+      count+=1;
+      if(count === upperData.length + lowerData.length){
+        enableControls(true);
       }
     }
   });
+  
   return (
     <group>
-      {controlState.showUpper &&<Model position={[0, 0, 1]} rotation={[controlState.meshAngle,3.14,0]} geometry={upper}/>}
-      {controlState.showLower &&<Model position={[0, 0, -1]} rotation={[controlState.meshAngle,3.14,0]} geometry={lower}/>}
+      {controlState.showUpper &&<Model position={[0, -10, 1]} rotation={[controlState.meshAngle,3.14,0]} geometry={data[controlState.stage]}/>}
+      {controlState.showLower &&<Model position={[0, -10, -1]} rotation={[controlState.meshAngle,3.14,0]} geometry={data[upperData.length + controlState.stage]}/>}
     </group>
   )
 }
 
 function App({camera, controls}) {
+  const [controlsEnabled, enableControls] = useState(false);
 
-  const enableControls = () => {
-    controls.enabled = true;
-  }
+  const upperRaw = ['mod0','mod1', 'mod2', 'mod3', 'mod4', 'mod5'];
+  const lowerRaw = ['model0', 'model1', 'model2', 'model3', 'model4', 'model5'];
+  const upperData = upperRaw.map((it)=>{
+    return 'https://yash1ts.pythonanywhere.com/js/'+it+'.stl';
+  });
+  const lowerData = lowerRaw.map((it)=>{
+    return 'https://yash1ts.pythonanywhere.com/js/'+it+'.stl';
+  });
+  controls.enabled = controlsEnabled;
 
   return (
     <ControlContextProvider >
       <LoadingContextProvider>
     <div className="App" style={{ display:'flex', flex: 1, height: '100vh'}} >
       <div style={{flex: 1, height: '100vh', width:'100%', zIndex: 1, position:'absolute'}}>
-          <ControlBoard camera={camera} controls={controls} />
+      {controls.enabled && <ControlBoard camera={camera} controls={controls} />}
       </div>
       <CanvasBoard camera={camera}>
-        <JawModel enableControls={enableControls}/>
+        <JawModel upperData={upperData} lowerData={lowerData} enableControls={enableControls}/>
       </CanvasBoard>
     </div>
     </LoadingContextProvider>

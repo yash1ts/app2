@@ -9,7 +9,7 @@ export default function CanvasBoard({camera, children}) {
     return (
         <Canvas camera={camera}>
             <ContextBridge>
-
+            <spotLight position={[0,0, 100]} intensity={1} />
         <ambientLight intensity={1}/>
         <Suspense fallback={<Loader/>} >
             {children}
