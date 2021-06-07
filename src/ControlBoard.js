@@ -1,8 +1,8 @@
-import { Button, IconButton, LinearProgress } from '@material-ui/core';
-import { PauseCircleFilled, PlayCircleFilled } from '@material-ui/icons';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { ProgressBar, Button } from 'react-bootstrap';
 import { ControlContext } from './ControlContext';
-export function ControlBoard({controls, camera, setShowLower, setShowUpper, setMeshAngle}) {
+import { MdPlayCircleFilled, MdPauseCircleFilled } from "react-icons/md";
+export function ControlBoard({controls, camera }) {
   const [controlState, setControlState] = useContext(ControlContext);
   const [playing, setPlaying] = useState(false);
   const ref = useRef(null);
@@ -103,61 +103,66 @@ export function ControlBoard({controls, camera, setShowLower, setShowUpper, setM
     
     const playItems = [];
     const PADDING = 12
-    playItems.push(<Button key={0} onClick={()=>{
+    playItems.push(<Button variant="light" key={0} onClick={()=>{
       setControlState((control)=>({
         ...control,
         stage: 0
       }));
-    }} style={{display:'flex',flex:1, paddingTop:PADDING}}/>);
+    }} onTouchStart={()=>{
+      setControlState((control)=>({
+        ...control,
+        stage: 0
+      }));
+    }} style={{display:'flex',flex:1, paddingTop:PADDING, backgroundColor:'transparent', borderColor:'transparent'}}/>);
     for(let i=0;i<controlState.total-1; i+=1){
-      playItems.push(<Button key={i+1} onClick={()=>{
+      playItems.push(<Button variant="light" key={i+1} onClick={()=>{
         setControlState((control)=>({
           ...control,
           stage: i+1
         }));
-      }} style={{display:'flex',flex:2, paddingTop:PADDING}}/>);
+      }} onTouchStart={()=>{
+        setControlState((control)=>({
+          ...control,
+          stage: i+1
+        }));
+      }} style={{display:'flex',flex:2, paddingTop:PADDING, backgroundColor:'transparent', borderColor:'transparent'}}/>);
     };
-    playItems.push(<Button key={controlState.total} onClick={()=>{
+    playItems.push(<Button variant="light" key={controlState.total} onClick={()=>{
       setControlState((control)=>({
         ...control,
         stage: control.total
       }));
-    }} style={{display:'flex',flex:1, paddingTop:PADDING}}/>);
+    }} onTouchStart={()=>{
+      setControlState((control)=>({
+        ...control,
+        stage: control.total
+      }));
+    }} style={{display:'flex',flex:1, paddingTop:PADDING, backgroundColor:'transparent', borderColor:'transparent'}}/>);
     
     return (
       <div style={{display: 'flex', flexDirection:'column', width:'100%', height:'100%', justifyContent:'space-between'}}>
         <div style={{display:'flex',  flexDirection: 'row', justifyContent: 'space-around', margin: 50}}>
-            <Button variant="contained" color="primary" onClick={()=> {
-            centerView();
-            }}>Center</Button>
-            <Button variant="contained" color="primary" onClick={()=> {
-            rightView();
-            }}>Right</Button>
-            <Button variant="contained" color="primary" onClick={()=> {
-            leftView();
-            }}>Left</Button>
-            <Button variant="contained" color="primary" onClick={()=> {
-            upperView()
-            }}>Upper Jaw</Button>
-            <Button variant="contained" color="primary" onClick={()=> {
-            lowerView();
-            }}>Lower Jaw</Button>
+            <Button variant="primary" color="primary" onClick={centerView} onTouchStart={centerView}>Center</Button>
+            <Button variant="primary" color="primary" onClick={rightView} onTouchStart={rightView}>Right</Button>
+            <Button variant="primary" color="primary" onClick={leftView} onTouchStart={leftView}>Left</Button>
+            <Button variant="primary" color="primary" onClick={upperView} onTouchStart={upperView}>Upper Jaw</Button>
+            <Button variant="primary" color="primary" onClick={lowerView} onTouchStart={lowerView}>Lower Jaw</Button>
         </div>
         <div style={{display:'flex', width:'100%', justifyContent:'center', alignItems:'center', marginBottom:'20px'}}>
         {controlState.total >1 &&<div style={{ display:'flex', flex:1, flexDirection:'row', justifyContent:'center', alignItems:'center', margin: 50}}>
           {!playing &&
-          <IconButton onClick={onPlay}>
-            <PlayCircleFilled color='primary' fontSize="large" style={{marginRight:10}}/>
-          </IconButton>}
+          <Button variant="light" onClick={onPlay} onTouchStart={onPlay} style={{marginRight:10}}>
+            <MdPlayCircleFilled size="30px" color='primary'/>
+          </Button>}
           {playing &&
-          <IconButton onClick={onPause}>
-            <PauseCircleFilled color='primary' fontSize="large" style={{marginRight:10}}/>
-            </IconButton>}
-          <div onClick={onPause} style={{display:'flex', flex:1, flexDirection:'column', width:'200px', maxWidth:500}}>
-            <div style={{display:'flex', flex:1, marginTop:24}}>
-              <LinearProgress variant="determinate" color='primary' value={controlState.stage*100/controlState.total} style={{display:'flex', flex:1}}/>
+          <Button variant="light" onClick={onPause} onTouchStart={onPause} style={{marginRight:10}}>
+            <MdPauseCircleFilled size="30px" color='primary'/>
+            </Button>}
+          <div onClick={onPause} onTouchStart={onPause} style={{display:'flex', flex:1, flexDirection:'column', width:'200px', maxWidth:500}}>
+            <div style={{display:'flex', flex:1, marginTop:22}}>
+              <ProgressBar color='primary' now={controlState.stage*100/controlState.total} style={{display:'flex', flex:1}}/>
             </div>
-            <div style={{display:'flex', position:'relative' ,top:-12, right:0, left:0}}>
+            <div style={{display:'flex', position:'relative' ,top:-18, right:0, left:0}}>
                 {playItems}
             </div>
           </div>

@@ -6,14 +6,14 @@ export default function Loader(){
     const ref = useRef();
     const [hovered, setHovered] = useState(false);
     const [loadingState, setLoadingState] = useContext(LoadingContext);
-    let loaded=0;
-    let total=0;
-    Object.values(loadingState).forEach((it)=>{
-      total+=it.total;
-    loaded+=it.loaded});
+    // let loaded=0;
+    // let total=0;
+    // Object.values(loadingState).forEach((it)=>{
+    //   total+=it.total;
+    // loaded+=it.loaded});
 
-    const progress = loaded*100/total;
-    // const {progress} = useProgress();
+    // const progress = loaded*100/total;
+    const {progress} = useProgress();
     useFrame(() => {
       ref.current.rotation.y += 0.02
       ref.current.rotation.x += 0.02});

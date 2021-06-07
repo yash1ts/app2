@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { PerspectiveCamera } from 'three';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const camera = new PerspectiveCamera(undefined, 
   window.innerWidth/window.innerHeight);
