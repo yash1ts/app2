@@ -2,14 +2,22 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ProgressBar, Button } from 'react-bootstrap';
 import { ControlContext } from './ControlContext';
 import { MdPlayCircleFilled, MdPauseCircleFilled } from "react-icons/md";
+import { Vector3 } from 'three';
+import { useFrame } from '@react-three/fiber';
 export function ControlBoard({controls, camera }) {
   const [controlState, setControlState] = useContext(ControlContext);
   const [playing, setPlaying] = useState(false);
+  const cameraTarget = null;
+  const previousTarget = null;
+  let timeout = null;
   const ref = useRef(null);
   useEffect(()=>{
     return ()=>{
       if(ref.current){
         clearInterval(ref.current);
+      }
+      if(timeout){
+        clearTimeout(timeout);
       }
     }
   }, []);
@@ -40,66 +48,91 @@ export function ControlBoard({controls, camera }) {
           showUpper: true,
           showLower: true,
           meshAngle: 0,
+          cameraTarget: new Vector3( 0, 0, 140 )
         }));
-    
-        camera.position.set( 0, 0, 140 );
-        camera.updateProjectionMatrix();
-        camera.updateWorldMatrix();
-        controls.update();
+        timeout = setTimeout(()=>{
+          setControlState((control)=>({
+            ...control,
+            cameraTarget: null
+        }));
+        },1000)
       }
     
       const rightView = () => {
+        if(timeout){
+          clearTimeout(timeout);
+        }
         setControlState((control) =>({
           ...control,
           showUpper: true,
           showLower: true,
           meshAngle: 0,
+          cameraTarget: new Vector3( 100, 0, 100 )
         }));
-    
-        camera.position.set( 100, 0, 100 );
-        camera.updateProjectionMatrix();
-        camera.updateWorldMatrix();
-        controls.update();
+        timeout = setTimeout(()=>{
+          setControlState((control)=>({
+            ...control,
+            cameraTarget: null
+        }));
+        },1000)
         
       }
     
       const leftView = () => {
+        if(timeout){
+          clearTimeout(timeout);
+        }
         setControlState((control) =>({
           ...control,
           showUpper: true,
           showLower: true,
           meshAngle: 0,
+          cameraTarget: new Vector3( -100, 0, 100 )
         }));
-        camera.position.set(-100,0,100);
-        camera.updateProjectionMatrix();
-        camera.updateWorldMatrix();
-        controls.update();
+        timeout = setTimeout(()=>{
+          setControlState((control)=>({
+            ...control,
+            cameraTarget: null
+        }));
+        },1000)
       }
     
       const upperView = () => {
+        if(timeout){
+          clearTimeout(timeout);
+        }
         setControlState((control) =>({
           ...control,
           showUpper: true,
           showLower: false,
           meshAngle: -1.75,
+          cameraTarget: new Vector3( 0, 0, 140 )
         }));
-        camera.position.set(0,0,140);
-        camera.updateProjectionMatrix();
-        camera.updateWorldMatrix();
-        controls.update();
+        timeout = setTimeout(()=>{
+          setControlState((control)=>({
+            ...control,
+            cameraTarget: null
+        }));
+        },1000)
       }
     
       const lowerView = () => {
+        if(timeout){
+          clearTimeout(timeout);
+        }
         setControlState((control) =>({
           ...control,
           showUpper: false,
           showLower: true,
           meshAngle: 1.75,
+          cameraTarget: new Vector3( 0, 0, 140 )
         }));
-        camera.position.set(0,0,140);
-        camera.updateProjectionMatrix();
-        camera.updateWorldMatrix();
-        controls.update();
+        timeout = setTimeout(()=>{
+          setControlState((control)=>({
+            ...control,
+            cameraTarget: null
+        }));
+        },1000)
       }
     
     const playItems = [];
@@ -143,11 +176,11 @@ export function ControlBoard({controls, camera }) {
     return (
       <div style={{display: 'flex', flexDirection:'column', width:'100%', height:'100%', justifyContent:'space-between'}}>
         <div style={{display:'flex',  flexDirection: 'row', justifyContent: 'space-around', margin: 50}}>
-            <Button variant="primary" color="primary" onClick={centerView} onTouchStart={centerView}>Center</Button>
-            <Button variant="primary" color="primary" onClick={rightView} onTouchStart={rightView}>Right</Button>
-            <Button variant="primary" color="primary" onClick={leftView} onTouchStart={leftView}>Left</Button>
-            <Button variant="primary" color="primary" onClick={upperView} onTouchStart={upperView}>Upper Jaw</Button>
-            <Button variant="primary" color="primary" onClick={lowerView} onTouchStart={lowerView}>Lower Jaw</Button>
+            <Button variant="primary" color="primary" onClick={centerView} onTouchStart={centerView} style={{display:'flex', margin: 2}}>Center View</Button>
+            <Button variant="primary" color="primary" onClick={rightView} onTouchStart={rightView} style={{display:'flex', margin: 2}}>Right View</Button>
+            <Button variant="primary" color="primary" onClick={leftView} onTouchStart={leftView} style={{display:'flex', margin: 2}}>Left View</Button>
+            <Button variant="primary" color="primary" onClick={upperView} onTouchStart={upperView} style={{display:'flex', margin: 2}}>Upper Jaw</Button>
+            <Button variant="primary" color="primary" onClick={lowerView} onTouchStart={lowerView} style={{display:'flex', margin: 2}}>Lower Jaw</Button>
         </div>
         <div style={{display:'flex', width:'100%', justifyContent:'center', alignItems:'center', marginBottom:'20px'}}>
         {controlState.total >0 &&

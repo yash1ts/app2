@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { PerspectiveCamera, PointLight } from 'three';
+import { PerspectiveCamera } from 'three';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const camera = new PerspectiveCamera(undefined, 
@@ -16,8 +16,6 @@ const onWindowResize = ()=>{
 
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-
-  // renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
 window.addEventListener( 'resize', onWindowResize, false );

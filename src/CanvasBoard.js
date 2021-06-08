@@ -1,11 +1,18 @@
-import { useContextBridge } from '@react-three/drei';
+import { Html, useContextBridge } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
-import React, {Suspense, useRef} from 'react';
-import { ControlContext } from './ControlContext';
+import React, {Suspense, useContext, useRef} from 'react';
+import { ControlContext, ControlContextProvider } from './ControlContext';
 import Loader from './Loader';
-function CanvasElement({children, camera}) {
+function CanvasElement({children, controls}) {
     const light = useRef(null);
-    useFrame(()=>{
+    const [controlState, setControlState] = useContext(ControlContext);
+    
+    useFrame(({camera})=>{
+        if(controlState.cameraTarget && !camera.position.equals(controlState.cameraTarget)){
+            camera.position.lerp(controlState.cameraTarget, 0.1);
+            camera.updateWorldMatrix();
+            controls.update();
+        }
         if(light.current){
             light.current.position.copy(camera.position);
         }
@@ -20,13 +27,14 @@ function CanvasElement({children, camera}) {
                 </group>
     )
 }
+
 export default function CanvasBoard({camera, children, controls}) {
     const ContextBridge = useContextBridge(ControlContext);
     
     return (
         <Canvas camera={camera}>
             <ContextBridge>
-                <CanvasElement camera={camera}>
+                <CanvasElement camera={camera} controls={controls}>
                     {children}
                 </CanvasElement>
             </ContextBridge>

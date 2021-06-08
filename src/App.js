@@ -6,15 +6,15 @@ import CanvasBoard from './CanvasBoard';
 import { ControlBoard } from './ControlBoard';
 import { Model } from './Model';
 import { ControlContext, ControlContextProvider } from './ControlContext';
-import { LoadingContext, LoadingContextProvider } from './LoadingContext';
-import { Box3, Vector3 } from 'three';
-import {mergeVertices} from 'three-stdlib/utils/BufferGeometryUtils.js';
+import { Vector3 } from 'three';
 
 function JawModel({upperData, lowerData, enableControls}) {
   const [controlState, setControlState] = useContext(ControlContext);
   const data = useLoader(PLYLoader, [...upperData, ...lowerData]);
-  enableControls(true);
   
+  useEffect(()=>{
+    enableControls(true);
+  },[]);
   const obj = data[controlState.stage+ upperData.length];
   const obj2 = data[controlState.stage];
   obj2.center();
@@ -46,7 +46,6 @@ function App({camera, controls}) {
 
   return (
     <ControlContextProvider >
-      <LoadingContextProvider>
     <div className="App" style={{display:'flex', height:'100vh'}} >
       <div style={{display:'flex', flex: 1, width:'100%', zIndex: 1, position:'fixed', left:0, right:0, bottom:0, top:0}}>
       {controls.enabled && <ControlBoard camera={camera} controls={controls} />}
@@ -55,7 +54,6 @@ function App({camera, controls}) {
         <JawModel upperData={upperData} lowerData={lowerData} enableControls={enableControls}/>
       </CanvasBoard>
     </div>
-    </LoadingContextProvider>
     </ControlContextProvider>
   );
 }
