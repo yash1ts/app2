@@ -1,5 +1,6 @@
 import { Html, useContextBridge } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { update } from '@tweenjs/tween.js';
 import React, {Suspense, useContext, useRef} from 'react';
 import { ControlContext, ControlContextProvider } from './ControlContext';
 import Loader from './Loader';
@@ -8,11 +9,8 @@ function CanvasElement({children, controls}) {
     const [controlState, setControlState] = useContext(ControlContext);
     
     useFrame(({camera})=>{
-        if(controlState.cameraTarget && !camera.position.equals(controlState.cameraTarget)){
-            camera.position.lerp(controlState.cameraTarget, 0.1);
-            camera.updateWorldMatrix();
-            controls.update();
-        }
+        update();
+        controls.update();
         if(light.current){
             light.current.position.copy(camera.position);
         }

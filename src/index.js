@@ -12,6 +12,7 @@ const camera = new PerspectiveCamera(undefined,
 const controls = new OrbitControls(camera, document.getElementById('root'));
 camera.position.set(0,0,140);
 controls.enabled = false;
+// controls.enablePan = false;
 const onWindowResize = ()=>{
 
   camera.aspect = window.innerWidth / window.innerHeight;

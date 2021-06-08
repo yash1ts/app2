@@ -12,7 +12,6 @@ export const ControlContextProvider = props => {
       meshAngle: 0,
       stage: 0,
       total: 5,
-      cameraTarget: null,
   });
  
   return (

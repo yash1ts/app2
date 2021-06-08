@@ -3,21 +3,15 @@ import { ProgressBar, Button } from 'react-bootstrap';
 import { ControlContext } from './ControlContext';
 import { MdPlayCircleFilled, MdPauseCircleFilled } from "react-icons/md";
 import { Vector3 } from 'three';
-import { useFrame } from '@react-three/fiber';
+import { Tween } from '@tweenjs/tween.js';
 export function ControlBoard({controls, camera }) {
   const [controlState, setControlState] = useContext(ControlContext);
   const [playing, setPlaying] = useState(false);
-  const cameraTarget = null;
-  const previousTarget = null;
-  let timeout = null;
   const ref = useRef(null);
   useEffect(()=>{
     return ()=>{
       if(ref.current){
         clearInterval(ref.current);
-      }
-      if(timeout){
-        clearTimeout(timeout);
       }
     }
   }, []);
@@ -48,91 +42,56 @@ export function ControlBoard({controls, camera }) {
           showUpper: true,
           showLower: true,
           meshAngle: 0,
-          cameraTarget: new Vector3( 0, 0, 140 )
         }));
-        timeout = setTimeout(()=>{
-          setControlState((control)=>({
-            ...control,
-            cameraTarget: null
-        }));
-        },1000)
+        new Tween(camera.position).to(new Vector3( 0, 0, 140 ), 400).start();
       }
     
       const rightView = () => {
-        if(timeout){
-          clearTimeout(timeout);
-        }
+
         setControlState((control) =>({
           ...control,
           showUpper: true,
           showLower: true,
           meshAngle: 0,
-          cameraTarget: new Vector3( 100, 0, 100 )
         }));
-        timeout = setTimeout(()=>{
-          setControlState((control)=>({
-            ...control,
-            cameraTarget: null
-        }));
-        },1000)
+        new Tween(camera.position).to(new Vector3( 100, 0, 100 ), 400).start();
         
       }
     
       const leftView = () => {
-        if(timeout){
-          clearTimeout(timeout);
-        }
+
         setControlState((control) =>({
           ...control,
           showUpper: true,
           showLower: true,
           meshAngle: 0,
-          cameraTarget: new Vector3( -100, 0, 100 )
         }));
-        timeout = setTimeout(()=>{
-          setControlState((control)=>({
-            ...control,
-            cameraTarget: null
-        }));
-        },1000)
+        new Tween(camera.position).to(new Vector3( -100, 0, 100 ), 400).start();
+        
       }
     
       const upperView = () => {
-        if(timeout){
-          clearTimeout(timeout);
-        }
+
         setControlState((control) =>({
           ...control,
           showUpper: true,
           showLower: false,
           meshAngle: -1.75,
-          cameraTarget: new Vector3( 0, 0, 140 )
         }));
-        timeout = setTimeout(()=>{
-          setControlState((control)=>({
-            ...control,
-            cameraTarget: null
-        }));
-        },1000)
+        new Tween(camera.position).to(new Vector3( 0, 0, 140 ), 400).start();
+        
       }
     
       const lowerView = () => {
-        if(timeout){
-          clearTimeout(timeout);
-        }
+
         setControlState((control) =>({
           ...control,
           showUpper: false,
           showLower: true,
           meshAngle: 1.75,
-          cameraTarget: new Vector3( 0, 0, 140 )
         }));
-        timeout = setTimeout(()=>{
-          setControlState((control)=>({
-            ...control,
-            cameraTarget: null
-        }));
-        },1000)
+        new Tween(camera.position).to(new Vector3( 0, 0, 140 ), 400).start();
+
       }
     
     const playItems = [];
