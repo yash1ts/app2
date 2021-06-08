@@ -5,14 +5,6 @@ import { LoadingContext } from './LoadingContext';
 export default function Loader(){
     const ref = useRef();
     const [hovered, setHovered] = useState(false);
-    const [loadingState, setLoadingState] = useContext(LoadingContext);
-    // let loaded=0;
-    // let total=0;
-    // Object.values(loadingState).forEach((it)=>{
-    //   total+=it.total;
-    // loaded+=it.loaded});
-
-    // const progress = loaded*100/total;
     const {progress} = useProgress();
     useFrame(() => {
       ref.current.rotation.y += 0.02
@@ -34,7 +26,7 @@ export default function Loader(){
         <pointLight position={[-20, -20, 20]} intensity={0.7}/>
         <pointLight position={[-20, 20, -20]} intensity={0.7}/>
         <pointLight position={[20, -20, -20]} intensity={0.7}/>
-        <boxGeometry attach="geometry" args={[10, 10, 10]} />
+        <boxBufferGeometry attach="geometry" args={[10, 10, 10]} />
         <meshPhongMaterial color="black"/>
       </mesh>
       <Html position={[-1, -15, 0]}><h4>{`${progress ? progress.toFixed(0): 0}`}</h4></Html>

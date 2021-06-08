@@ -39,9 +39,10 @@ export function ControlBoard({controls, camera }) {
           ...control,
           showUpper: true,
           showLower: true,
-          meshAngle: 1.75,
+          meshAngle: 0,
         }));
-        camera.position.set(0,0,140);
+    
+        camera.position.set( 0, 0, 140 );
         camera.updateProjectionMatrix();
         camera.updateWorldMatrix();
         controls.update();
@@ -52,10 +53,10 @@ export function ControlBoard({controls, camera }) {
           ...control,
           showUpper: true,
           showLower: true,
-          meshAngle: 1.75,
+          meshAngle: 0,
         }));
     
-        camera.position.set( 120, 0, 120 );
+        camera.position.set( 100, 0, 100 );
         camera.updateProjectionMatrix();
         camera.updateWorldMatrix();
         controls.update();
@@ -67,9 +68,9 @@ export function ControlBoard({controls, camera }) {
           ...control,
           showUpper: true,
           showLower: true,
-          meshAngle: 1.75,
+          meshAngle: 0,
         }));
-        camera.position.set(-120,0,120);
+        camera.position.set(-100,0,100);
         camera.updateProjectionMatrix();
         camera.updateWorldMatrix();
         controls.update();
@@ -80,7 +81,7 @@ export function ControlBoard({controls, camera }) {
           ...control,
           showUpper: true,
           showLower: false,
-          meshAngle: 0,
+          meshAngle: -1.75,
         }));
         camera.position.set(0,0,140);
         camera.updateProjectionMatrix();
@@ -93,7 +94,7 @@ export function ControlBoard({controls, camera }) {
           ...control,
           showUpper: false,
           showLower: true,
-          meshAngle: 3.14,
+          meshAngle: 1.75,
         }));
         camera.position.set(0,0,140);
         camera.updateProjectionMatrix();
@@ -149,7 +150,9 @@ export function ControlBoard({controls, camera }) {
             <Button variant="primary" color="primary" onClick={lowerView} onTouchStart={lowerView}>Lower Jaw</Button>
         </div>
         <div style={{display:'flex', width:'100%', justifyContent:'center', alignItems:'center', marginBottom:'20px'}}>
-        {controlState.total >1 &&<div style={{ display:'flex', flex:1, flexDirection:'row', justifyContent:'center', alignItems:'center', margin: 50}}>
+        {controlState.total >0 &&
+        <div style={{ display:'flex', flex:1, flexDirection:'column', margin: 50}}>
+        <div style={{ display:'flex', flex:1, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
           {!playing &&
           <Button variant="light" onClick={onPlay} onTouchStart={onPlay} style={{marginRight:10}}>
             <MdPlayCircleFilled size="30px" color='primary'/>
@@ -166,6 +169,9 @@ export function ControlBoard({controls, camera }) {
                 {playItems}
             </div>
           </div>
+          </div>
+          <h6>{`${controlState.stage+1}/${controlState.total+1}`}</h6>
+          
         </div>}
         </div>
         </div>
